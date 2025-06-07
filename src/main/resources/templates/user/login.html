@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>로그인 - BookStore24</title>
+</head>
+<body>
+    <main th:replace="~{layout/base :: content}">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>로그인</h3>
+                            <p class="text-muted">BookStore24에 오신 것을 환영합니다</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- Error Messages -->
+                            <div class="alert alert-danger" th:if="${param.error}">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                아이디 또는 비밀번호가 올바르지 않습니다.
+                            </div>
+                            
+                            <div class="alert alert-success" th:if="${param.logout}">
+                                <i class="fas fa-check-circle me-2"></i>
+                                성공적으로 로그아웃되었습니다.
+                            </div>
+                            
+                            <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
+                            <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+                            
+                            <!-- Login Form -->
+                            <form th:action="@{/login}" method="post">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">아이디</label>
+                                    <input type="text" class="form-control" id="username" name="username" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">비밀번호</label>
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                </div>
+                                
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                                    <label class="form-check-label" for="remember-me">
+                                        아이디 기억하기
+                                    </label>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-sign-in-alt me-2"></i>로그인
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <hr>
+                            
+                            <!-- Social Login -->
+                            <div class="row">
+                                <div class="col-6">
+                                    <button class="btn btn-warning w-100">
+                                        <i class="fas fa-comment me-2"></i>카카오
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-success w-100">
+                                        <i class="fas fa-n me-2"></i>네이버
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-3">
+                                <a th:href="@{/forgot-password}" class="text-decoration-none">비밀번호를 잊으셨나요?</a>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <p class="mb-0">
+                                아직 계정이 없으신가요? 
+                                <a th:href="@{/register}" class="text-decoration-none">회원가입</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

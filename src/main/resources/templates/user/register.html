@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>회원가입 - BookStore24</title>
+</head>
+<body>
+    <main th:replace="~{layout/base :: content}">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h3>회원가입</h3>
+                            <p class="text-muted">BookStore24의 회원이 되어 다양한 혜택을 누려보세요</p>
+                        </div>
+                        <div class="card-body">
+                            <!-- Error Messages -->
+                            <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
+                            
+                            <!-- Registration Form -->
+                            <form th:action="@{/register}" th:object="${user}" method="post" id="registerForm">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="userId" class="form-label">아이디 *</label>
+                                            <input type="text" class="form-control" id="userId" th:field="*{userId}" required>
+                                            <div class="form-text">4자 이상의 영문, 숫자만 사용 가능합니다.</div>
+                                            <div id="userIdFeedback" class="invalid-feedback"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label class="form-label">&nbsp;</label>
+                                            <button type="button" class="btn btn-outline-secondary w-100" id="checkUserIdBtn">
+                                                중복확인
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">비밀번호 *</label>
+                                    <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                                    <div class="form-text">8자 이상, 영문/숫자/특수문자 포함</div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">비밀번호 확인 *</label>
+                                    <input type="password" class="form-control" id="confirmPassword" required>
+                                    <div id="passwordFeedback" class="invalid-feedback"></div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">이름 *</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">이메일 *</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">연락처 *</label>
+                                    <input type="tel" class="form-control" id="phone" th:field="*{phone}" placeholder="010-0000-0000" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">주소 *</label>
+                                    <input type="text" class="form-control" id="address" th:field="*{address}" required>
+                                </div>
+                                
+                                <!-- Terms Agreement -->
+                                <div class="mb-4">
+                                    <h5>약관 동의</h5>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="termsAgree" required>
+                                        <label class="form-check-label" for="termsAgree">
+                                            [필수] 이용약관에 동의합니다
+                                        </label>
+                                        <a href="#" class="text-decoration-none ms-2">보기</a>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="privacyAgree" required>
+                                        <label class="form-check-label" for="privacyAgree">
+                                            [필수] 개인정보 처리방침에 동의합니다
+                                        </label>
+                                        <a href="#" class="text-decoration-none ms-2">보기</a>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="marketingAgree">
+                                        <label class="form-check-label" for="marketingAgree">
+                                            [선택] 마케팅 정보 수신에 동의합니다
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-user-plus me-2"></i>회원가입
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer text-center">
+                            <p class="mb-0">
+                                이미 계정이 있으신가요? 
+                                <a th:href="@{/login}" class="text-decoration-none">로그인</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        // User ID duplicate check
+        document.getElementById('checkUserIdBtn').addEventListener('click', function() {
+            const userId = document.getElementById('userId').value;
+            
+            if (!userId) {
+                alert('아이디를 입력해주세요.');
+                return;
+            }
+            
+            fetch(`/check-userid?userId=${userId}`)
+                .then(response => response.json())
+                .then(available => {
+                    const feedback = document.getElementById('userIdFeedback');
+                    const userIdInput = document.getElementById('userId');
+                    
+                    if (available) {
+                        userIdInput.classList.remove('is-invalid');
+                        userIdInput.classList.add('is-valid');
+                        feedback.textContent = '사용 가능한 아이디입니다.';
+                        feedback.classList.remove('invalid-feedback');
+                        feedback.classList.add('valid-feedback');
+                    } else {
+                        userIdInput.classList.remove('is-valid');
+                        userIdInput.classList.add('is-invalid');
+                        feedback.textContent = '이미 사용 중인 아이디입니다.';
+                        feedback.classList.remove('valid-feedback');
+                        feedback.classList.add('invalid-feedback');
+                    }
+                    
+                    feedback.style.display = 'block';
+                });
+        });
+        
+        // Password confirmation check
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            const feedback = document.getElementById('passwordFeedback');
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.classList.add('is-invalid');
+                feedback.textContent = '비밀번호가 일치하지 않습니다.';
+                feedback.style.display = 'block';
+            } else if (confirmPassword && password === confirmPassword) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+                feedback.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
