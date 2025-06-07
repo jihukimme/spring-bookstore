@@ -1,5 +1,6 @@
 package com.example.bookstore.controller.admin;
 
+import com.example.bookstore.dto.UserDto;
 import com.example.bookstore.entity.User;
 import com.example.bookstore.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -26,11 +28,11 @@ public class AdminUserController {
     @GetMapping
     public String listUsers(
             @RequestParam(required = false) String userId,
-            @RequestParam(required = false) User.UserStatus status,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam(required = false) User.UserGrade grade,
+            @RequestParam(required = false) String grade,
             @RequestParam(required = false) String name,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "30") int size,
@@ -41,7 +43,7 @@ public class AdminUserController {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         
-        Page<User> users = userService.searchUsers(userId, status, email, startDate, endDate, grade, name, pageable);
+        Page<UserDto> users = userService.searchUsers(userId, status, email, startDate, endDate, grade, name, pageable);
         
         model.addAttribute("users", users);
         model.addAttribute("currentPage", page);
@@ -65,7 +67,7 @@ public class AdminUserController {
     
     @GetMapping("/{id}")
     public String viewUser(@PathVariable Long id, Model model) {
-        Optional<User> userOpt = userService.findById(id);
+        Optional<UserDto> userOpt = userService.findByIdOptional(id);
         
         if (userOpt.isPresent()) {
             model.addAttribute("user", userOpt.get());
@@ -81,15 +83,15 @@ public class AdminUserController {
     @PostMapping("/{id}/status")
     public String updateUserStatus(
             @PathVariable Long id,
-            @RequestParam User.UserStatus status,
+            @RequestParam String status,
             RedirectAttributes redirectAttributes) {
         
-        Optional<User> userOpt = userService.findById(id);
+        Optional<UserDto> userOpt = userService.findByIdOptional(id);
         
         if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.setStatus(status);
-            userService.updateUser(user);
+            UserDto userDto = userOpt.get();
+            userDto.setStatus(status);
+            userService.updateUser(userDto);
             
             redirectAttributes.addFlashAttribute("success", "회원 상태가 성공적으로 업데이트되었습니다.");
         } else {
@@ -102,15 +104,15 @@ public class AdminUserController {
     @PostMapping("/{id}/grade")
     public String updateUserGrade(
             @PathVariable Long id,
-            @RequestParam User.UserGrade grade,
+            @RequestParam String grade,
             RedirectAttributes redirectAttributes) {
         
-        Optional<User> userOpt = userService.findById(id);
+        Optional<UserDto> userOpt = userService.findByIdOptional(id);
         
         if (userOpt.isPresent()) {
-            User user = userOpt.get();
-            user.setGrade(grade);
-            userService.updateUser(user);
+            UserDto userDto = userOpt.get();
+            userDto.setGrade(grade);
+            userService.updateUser(userDto);
             
             redirectAttributes.addFlashAttribute("success", "회원 등급이 성공적으로 업데이트되었습니다.");
         } else {

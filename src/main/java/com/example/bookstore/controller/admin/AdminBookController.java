@@ -1,5 +1,6 @@
 package com.example.bookstore.controller.admin;
 
+import com.example.bookstore.dto.BookDto;
 import com.example.bookstore.entity.Book;
 import com.example.bookstore.service.BookService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -30,7 +32,7 @@ public class AdminBookController {
             @RequestParam(required = false) String publisher,
             @RequestParam(required = false) String author,
             @RequestParam(required = false) Integer stockQuantity,
-            @RequestParam(required = false) Book.BookStatus status,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam(defaultValue = "0") int page,
@@ -42,7 +44,7 @@ public class AdminBookController {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         
-        Page<Book> books = bookService.searchBooks(title, publisher, author, stockQuantity, status, startDate, endDate, pageable);
+        Page<BookDto> books = bookService.searchBooks(title, publisher, author, stockQuantity, status, startDate, endDate, pageable);
         
         model.addAttribute("books", books);
         model.addAttribute("currentPage", page);
@@ -58,13 +60,14 @@ public class AdminBookController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("pageSize", size);
+        model.addAttribute("statuses", Arrays.toString(Book.BookStatus.values()));
         
         return "admin/books/list";
     }
     
     @GetMapping("/new")
     public String newBookForm(Model model) {
-        model.addAttribute("book", new Book());
+        model.addAttribute("book", new BookDto());
         model.addAttribute("statuses", Book.BookStatus.values());
         
         return "admin/books/form";
@@ -72,7 +75,7 @@ public class AdminBookController {
     
     @PostMapping
     public String saveBook(
-            @ModelAttribute Book book,
+            @ModelAttribute BookDto bookDto,
             @RequestParam(required = false) MultipartFile imageFile,
             @RequestParam(required = false) MultipartFile pdfFile,
             RedirectAttributes redirectAttributes) {
@@ -80,7 +83,7 @@ public class AdminBookController {
         // In a real application, you would handle file uploads here
         // For this example, we'll just save the book
         
-        bookService.saveBook(book);
+        bookService.saveBook(bookDto);
         redirectAttributes.addFlashAttribute("success", "도서가 성공적으로 저장되었습니다.");
         
         return "redirect:/admin/books";
@@ -88,7 +91,7 @@ public class AdminBookController {
     
     @GetMapping("/{id}/edit")
     public String editBookForm(@PathVariable Long id, Model model) {
-        Optional<Book> bookOpt = bookService.findById(id);
+        Optional<BookDto> bookOpt = bookService.findByIdOptional(id);
         
         if (bookOpt.isPresent()) {
             model.addAttribute("book", bookOpt.get());
@@ -102,7 +105,7 @@ public class AdminBookController {
     
     @GetMapping("/{id}")
     public String viewBook(@PathVariable Long id, Model model) {
-        Optional<Book> bookOpt = bookService.findById(id);
+        Optional<BookDto> bookOpt = bookService.findByIdOptional(id);
         
         if (bookOpt.isPresent()) {
             model.addAttribute("book", bookOpt.get());

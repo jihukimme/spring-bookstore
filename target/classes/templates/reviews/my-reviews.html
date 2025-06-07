@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>내 리뷰 - BookStore24</title>
+</head>
+<body>
+    <main th:replace="~{layout/base :: content}">
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <h2 class="mb-4">
+                        <i class="fas fa-star text-warning me-2"></i>
+                        내가 작성한 리뷰
+                    </h2>
+                    
+                    <div th:if="${reviews.empty}" class="text-center py-5">
+                        <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                        <h4 class="text-muted">작성한 리뷰가 없습니다</h4>
+                        <p class="text-muted">도서를 구매하고 리뷰를 작성해보세요!</p>
+                        <a th:href="@{/books}" class="btn btn-primary">
+                            <i class="fas fa-book me-2"></i>도서 둘러보기
+                        </a>
+                    </div>
+                    
+                    <div th:unless="${reviews.empty}">
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4 mb-4" th:each="review : ${reviews}">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h6 class="card-title">
+                                            <a th:href="@{/books/{id}(id=${review.bookId})}" 
+                                               class="text-decoration-none" th:text="${review.bookTitle}">
+                                                도서 제목
+                                            </a>
+                                        </h6>
+                                        
+                                        <div class="rating mb-2">
+                                            <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                                <i class="fas fa-star" th:if="${i <= review.rating}"></i>
+                                                <i class="far fa-star" th:unless="${i <= review.rating}"></i>
+                                            </span>
+                                            <small class="text-muted ms-1" th:text="${review.rating} + '/5'">5/5</small>
+                                        </div>
+                                        
+                                        <p class="card-text" th:text="${review.content}">리뷰 내용</p>
+                                        
+                                        <small class="text-muted">
+                                            작성일: <span th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">2024-01-01</span>
+                                        </small>
+                                    </div>
+                                    
+                                    <div class="card-footer bg-transparent">
+                                        <div class="d-flex justify-content-between">
+                                            <a th:href="@{/books/{id}(id=${review.bookId})}" 
+                                               class="btn btn-outline-primary btn-sm">
+                                                <i class="fas fa-eye me-1"></i>도서 보기
+                                            </a>
+                                            
+                                            <form th:action="@{/reviews/{id}/delete(id=${review.id})}" 
+                                                  method="post" class="d-inline"
+                                                  onsubmit="return confirm('정말로 이 리뷰를 삭제하시겠습니까?')">
+                                                <input type="hidden" name="bookId" th:value="${review.bookId}">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                    <i class="fas fa-trash me-1"></i>삭제
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

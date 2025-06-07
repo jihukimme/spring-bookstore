@@ -27,9 +27,16 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     
     Page<Book> findByCategory(Category category, Pageable pageable);
     
+    // 복합 검색을 위한 메서드 추가
+    Page<Book> findByTitleContainingOrAuthorContainingOrPublisherContaining(
+            String title, String author, String publisher, Pageable pageable);
+    
     @Query("SELECT b FROM Book b ORDER BY b.salesIndex DESC")
     List<Book> findBestSellers(Pageable pageable);
     
     @Query("SELECT b FROM Book b WHERE b.registeredAt >= :oneMonthAgo ORDER BY b.registeredAt DESC")
     List<Book> findNewReleases(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
+    
+    // 상태별 개수 조회
+    long countByStatus(Book.BookStatus status);
 }

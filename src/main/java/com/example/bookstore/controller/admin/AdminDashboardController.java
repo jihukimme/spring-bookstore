@@ -1,5 +1,8 @@
 package com.example.bookstore.controller.admin;
 
+import com.example.bookstore.entity.Book;
+import com.example.bookstore.entity.Order;
+import com.example.bookstore.entity.User;
 import com.example.bookstore.service.BookService;
 import com.example.bookstore.service.OrderService;
 import com.example.bookstore.service.UserService;
@@ -26,9 +29,28 @@ public class AdminDashboardController {
         long totalOrders = orderService.findAllOrders(PageRequest.of(0, 1)).getTotalElements();
         long totalUsers = userService.findAllUsers(PageRequest.of(0, 1)).getTotalElements();
         
+        // Get counts by status
+        long sellingBooks = bookService.getBookCountByStatus(Book.BookStatus.SELLING.name());
+        long outOfStockBooks = bookService.getBookCountByStatus(Book.BookStatus.OUT_OF_STOCK.name());
+        
+        long pendingOrders = orderService.getOrderCountByStatus(Order.OrderStatus.PENDING.name());
+        long shippingOrders = orderService.getOrderCountByStatus(Order.OrderStatus.SHIPPING.name());
+        
+        long activeUsers = userService.getUserCountByStatus(User.UserStatus.ACTIVE.name());
+        long vipUsers = userService.getUserCountByGrade(User.UserGrade.VIP.name());
+        
         model.addAttribute("totalBooks", totalBooks);
         model.addAttribute("totalOrders", totalOrders);
         model.addAttribute("totalUsers", totalUsers);
+        
+        model.addAttribute("sellingBooks", sellingBooks);
+        model.addAttribute("outOfStockBooks", outOfStockBooks);
+        
+        model.addAttribute("pendingOrders", pendingOrders);
+        model.addAttribute("shippingOrders", shippingOrders);
+        
+        model.addAttribute("activeUsers", activeUsers);
+        model.addAttribute("vipUsers", vipUsers);
         
         return "admin/dashboard";
     }

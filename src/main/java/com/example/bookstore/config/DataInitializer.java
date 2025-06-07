@@ -8,7 +8,8 @@ import com.example.bookstore.repository.SearchTermRepository;
 import com.example.bookstore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
+// TODO: Spring Security 적용 시 주석 해제
+// import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -23,7 +24,8 @@ public class DataInitializer implements CommandLineRunner {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final SearchTermRepository searchTermRepository;
-    private final PasswordEncoder passwordEncoder;
+    // TODO: Spring Security 적용 시 주석 해제
+    // private final PasswordEncoder passwordEncoder;
     
     @Override
     public void run(String... args) throws Exception {
@@ -31,7 +33,9 @@ public class DataInitializer implements CommandLineRunner {
         if (!userRepository.existsByUserId("admin")) {
             User admin = new User();
             admin.setUserId("admin");
-            admin.setPassword(passwordEncoder.encode("admin123"));
+            // TODO: Spring Security 적용 시 주석 해제하고 아래 라인 주석 처리
+            // admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setPassword("admin123"); // 임시: 평문 비밀번호
             admin.setName("관리자");
             admin.setEmail("admin@bookstore.com");
             admin.setPhone("010-0000-0000");
@@ -40,6 +44,21 @@ public class DataInitializer implements CommandLineRunner {
             admin.setGrade(User.UserGrade.VIP);
             admin.setRoles(new HashSet<>(Arrays.asList(User.UserRole.ROLE_ADMIN, User.UserRole.ROLE_USER)));
             userRepository.save(admin);
+        }
+        
+        // Initialize test user
+        if (!userRepository.existsByUserId("user")) {
+            User user = new User();
+            user.setUserId("user");
+            user.setPassword("user123"); // 임시: 평문 비밀번호
+            user.setName("테스트 사용자");
+            user.setEmail("user@bookstore.com");
+            user.setPhone("010-1234-5678");
+            user.setAddress("서울시 서초구");
+            user.setStatus(User.UserStatus.ACTIVE);
+            user.setGrade(User.UserGrade.REGULAR);
+            user.setRoles(new HashSet<>(Arrays.asList(User.UserRole.ROLE_USER)));
+            userRepository.save(user);
         }
         
         // Initialize sample books

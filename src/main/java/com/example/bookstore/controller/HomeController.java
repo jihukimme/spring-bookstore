@@ -1,6 +1,6 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.entity.Book;
+import com.example.bookstore.dto.BookDto;
 import com.example.bookstore.entity.SearchTerm;
 import com.example.bookstore.service.BookService;
 import com.example.bookstore.service.SearchService;
@@ -20,8 +20,8 @@ public class HomeController {
     
     @GetMapping("/")
     public String home(Model model) {
-        List<Book> bestSellers = bookService.findBestSellers(10);
-        List<Book> newReleases = bookService.findNewReleases(10);
+        List<BookDto> bestSellers = bookService.findBestSellers();
+        List<BookDto> newReleases = bookService.findNewReleases();
         List<SearchTerm> popularSearches = searchService.getTopSearchTerms(10);
         
         model.addAttribute("bestSellers", bestSellers);

@@ -1,11 +1,12 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.entity.Book;
-import com.example.bookstore.entity.Category;
-import com.example.bookstore.entity.Review;
+import com.example.bookstore.dto.BookDto;
+import com.example.bookstore.dto.ReviewDto;
+import com.example.bookstore.dto.UserDto;
 import com.example.bookstore.service.BookService;
 import com.example.bookstore.service.ReviewService;
 import com.example.bookstore.service.SearchService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,7 +17,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/books")
@@ -41,7 +41,7 @@ public class BookController {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         
-        Page<Book> books;
+        Page<BookDto> books;
         
         if (title != null && !title.isEmpty()) {
             books = bookService.searchBooks(title, null, null, null, null, null, null, pageable);
@@ -70,41 +70,32 @@ public class BookController {
     }
     
     @GetMapping("/{id}")
-    public String viewBook(@PathVariable Long id, Model model) {
-        Optional<Book> bookOpt = bookService.findById(id);
-        
-        if (bookOpt.isPresent()) {
-            Book book = bookOpt.get();
-            List<Review> reviews = reviewService.findByBook(book);
+    public String viewBook(@PathVariable Long id, HttpSession session, Model model) {
+        try {
+            BookDto book = bookService.findById(id);
+            List<ReviewDto> reviews = reviewService.findByBookId(id);
+            
+            // Check if user can write a review
+            UserDto userDto = (UserDto) session.getAttribute("user");
+            boolean canReview = false;
+            if (userDto != null) {
+                canReview = reviewService.canUserReview(userDto, id);
+            }
+            
+            // Get review statistics
+            Double avgRating = reviewService.getAverageRatingForBook(id);
+            long reviewCount = reviewService.getReviewCountForBook(id);
             
             model.addAttribute("book", book);
             model.addAttribute("reviews", reviews);
+            model.addAttribute("canReview", canReview);
+            model.addAttribute("avgRating", avgRating);
+            model.addAttribute("reviewCount", reviewCount);
+            model.addAttribute("newReview", new ReviewDto());
             
             return "books/view";
-        } else {
+        } catch (Exception e) {
             return "redirect:/books";
         }
-    }
-    
-    @GetMapping("/category/{categoryId}")
-    public String listBooksByCategory(
-            @PathVariable Long categoryId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "12") int size,
-            Model model) {
-        
-        // This would need a CategoryService to fetch the category
-        Category category = new Category(); // Placeholder
-        category.setId(categoryId);
-        
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Book> books = bookService.findByCategory(category, pageable);
-        
-        model.addAttribute("books", books);
-        model.addAttribute("category", category);
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", books.getTotalPages());
-        
-        return "books/category";
     }
 }

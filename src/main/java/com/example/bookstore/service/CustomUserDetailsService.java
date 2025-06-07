@@ -1,5 +1,7 @@
 package com.example.bookstore.service;
 
+// TODO: Spring Security 적용 시 주석 해제
+/*
 import com.example.bookstore.entity.User;
 import com.example.bookstore.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,3 +39,4 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 }
+*/

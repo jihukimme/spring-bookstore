@@ -1,5 +1,6 @@
 package com.example.bookstore.controller.admin;
 
+import com.example.bookstore.dto.OrderDto;
 import com.example.bookstore.entity.Book;
 import com.example.bookstore.entity.Order;
 import com.example.bookstore.service.OrderService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Controller
@@ -30,7 +32,7 @@ public class AdminOrderController {
             @RequestParam(required = false) String bookTitle,
             @RequestParam(required = false) String publisher,
             @RequestParam(required = false) String author,
-            @RequestParam(required = false) Book.BookStatus bookStatus,
+            @RequestParam(required = false) String bookStatus,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
             @RequestParam(defaultValue = "0") int page,
@@ -42,7 +44,7 @@ public class AdminOrderController {
         Sort sort = Sort.by(sortDir.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         
-        Page<Order> orders = orderService.searchOrders(userName, bookTitle, publisher, author, bookStatus, startDate, endDate, pageable);
+        Page<OrderDto> orders = orderService.searchOrders(userName, bookTitle, publisher, author, bookStatus, startDate, endDate, pageable);
         
         model.addAttribute("orders", orders);
         model.addAttribute("currentPage", page);
@@ -58,20 +60,21 @@ public class AdminOrderController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("pageSize", size);
+        model.addAttribute("bookStatuses", Book.BookStatus.values());
+        model.addAttribute("orderStatuses", Order.OrderStatus.values());
         
         return "admin/orders/list";
     }
     
     @GetMapping("/{id}")
     public String viewOrder(@PathVariable Long id, Model model) {
-        Optional<Order> orderOpt = orderService.findById(id);
-        
-        if (orderOpt.isPresent()) {
-            model.addAttribute("order", orderOpt.get());
+        try {
+            OrderDto order = orderService.findById(id);
+            model.addAttribute("order", order);
             model.addAttribute("statuses", Order.OrderStatus.values());
             
             return "admin/orders/view";
-        } else {
+        } catch (Exception e) {
             return "redirect:/admin/orders";
         }
     }
@@ -79,7 +82,7 @@ public class AdminOrderController {
     @PostMapping("/{id}/status")
     public String updateOrderStatus(
             @PathVariable Long id,
-            @RequestParam Order.OrderStatus status,
+            @RequestParam String status,
             RedirectAttributes redirectAttributes) {
         
         try {

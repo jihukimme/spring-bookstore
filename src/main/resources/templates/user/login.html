@@ -15,18 +15,9 @@
                         </div>
                         <div class="card-body">
                             <!-- Error Messages -->
-                            <div class="alert alert-danger" th:if="${param.error}">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                아이디 또는 비밀번호가 올바르지 않습니다.
-                            </div>
-                            
-                            <div class="alert alert-success" th:if="${param.logout}">
-                                <i class="fas fa-check-circle me-2"></i>
-                                성공적으로 로그아웃되었습니다.
-                            </div>
+                            <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
                             
                             <div class="alert alert-success" th:if="${success}" th:text="${success}"></div>
-                            <div class="alert alert-danger" th:if="${error}" th:text="${error}"></div>
                             
                             <!-- Login Form -->
                             <form th:action="@{/login}" method="post">
@@ -40,13 +31,6 @@
                                     <input type="password" class="form-control" id="password" name="password" required>
                                 </div>
                                 
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
-                                    <label class="form-check-label" for="remember-me">
-                                        아이디 기억하기
-                                    </label>
-                                </div>
-                                
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-sign-in-alt me-2"></i>로그인
@@ -56,18 +40,11 @@
                             
                             <hr>
                             
-                            <!-- Social Login -->
-                            <div class="row">
-                                <div class="col-6">
-                                    <button class="btn btn-warning w-100">
-                                        <i class="fas fa-comment me-2"></i>카카오
-                                    </button>
-                                </div>
-                                <div class="col-6">
-                                    <button class="btn btn-success w-100">
-                                        <i class="fas fa-n me-2"></i>네이버
-                                    </button>
-                                </div>
+                            <!-- Test Accounts Info -->
+                            <div class="alert alert-info">
+                                <h6>테스트 계정</h6>
+                                <p class="mb-1"><strong>관리자:</strong> admin / admin123</p>
+                                <p class="mb-0"><strong>사용자:</strong> user / user123</p>
                             </div>
                             
                             <div class="text-center mt-3">

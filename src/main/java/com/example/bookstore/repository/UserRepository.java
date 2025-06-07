@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -29,4 +30,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByGrade(User.UserGrade grade, Pageable pageable);
     
     Page<User> findByNameContaining(String name, Pageable pageable);
+    
+    // 비활성 사용자 조회를 위한 메서드 추가
+    List<User> findByLastLoginDateBefore(LocalDateTime date);
+    
+    // 상태별/등급별 개수 조회
+    long countByStatus(User.UserStatus status);
+    
+    long countByGrade(User.UserGrade grade);
 }

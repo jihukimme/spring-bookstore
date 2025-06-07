@@ -1,12 +1,10 @@
 package com.example.bookstore.controller;
 
-import com.example.bookstore.entity.CartItem;
-import com.example.bookstore.entity.User;
+import com.example.bookstore.dto.CartItemDto;
+import com.example.bookstore.dto.UserDto;
 import com.example.bookstore.service.CartService;
-import com.example.bookstore.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,47 +17,38 @@ import java.util.List;
 public class CartController {
     
     private final CartService cartService;
-    private final UserService userService;
     
     @GetMapping
-    public String viewCart(Authentication authentication, Model model) {
-        if (authentication != null) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = userService.findByUserId(userDetails.getUsername())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            
-            List<CartItem> cartItems = cartService.getCartItems(user);
-            model.addAttribute("cartItems", cartItems);
-            
-            return "cart/view";
-        } else {
+    public String viewCart(HttpSession session, Model model) {
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        if (userDto == null) {
             return "redirect:/login";
         }
+        
+        List<CartItemDto> cartItems = cartService.getCartItems(userDto);
+        model.addAttribute("cartItems", cartItems);
+        
+        return "cart/view";
     }
     
     @PostMapping("/add")
-    public String addToCart(
-            Authentication authentication,
-            @RequestParam Long bookId,
-            @RequestParam(defaultValue = "1") Integer quantity) {
+    public String addToCart(HttpSession session,
+                           @RequestParam Long bookId,
+                           @RequestParam(defaultValue = "1") Integer quantity) {
         
-        if (authentication != null) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = userService.findByUserId(userDetails.getUsername())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            
-            cartService.addToCart(user, bookId, quantity);
-            
-            return "redirect:/cart";
-        } else {
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        if (userDto == null) {
             return "redirect:/login";
         }
+        
+        cartService.addToCart(userDto, bookId, quantity);
+        
+        return "redirect:/cart";
     }
     
     @PostMapping("/update")
-    public String updateCartItem(
-            @RequestParam Long cartItemId,
-            @RequestParam Integer quantity) {
+    public String updateCartItem(@RequestParam Long cartItemId,
+                                @RequestParam Integer quantity) {
         
         cartService.updateCartItemQuantity(cartItemId, quantity);
         
@@ -74,13 +63,10 @@ public class CartController {
     }
     
     @PostMapping("/clear")
-    public String clearCart(Authentication authentication) {
-        if (authentication != null) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = userService.findByUserId(userDetails.getUsername())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-            
-            cartService.clearCart(user);
+    public String clearCart(HttpSession session) {
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        if (userDto != null) {
+            cartService.clearCart(userDto);
         }
         
         return "redirect:/cart";
