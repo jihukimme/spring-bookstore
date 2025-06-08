@@ -2,6 +2,7 @@ package com.example.bookstore.repository;
 
 import com.example.bookstore.entity.Book;
 import com.example.bookstore.entity.Category;
+import com.example.bookstore.enums.BookStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,7 +22,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     
     Page<Book> findByStockQuantityLessThanEqual(Integer stockQuantity, Pageable pageable);
     
-    Page<Book> findByStatus(Book.BookStatus status, Pageable pageable);
+    Page<Book> findByStatus(BookStatus status, Pageable pageable);
     
     Page<Book> findByRegisteredAtBetween(LocalDateTime start, LocalDateTime end, Pageable pageable);
     
@@ -31,12 +32,12 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Page<Book> findByTitleContainingOrAuthorContainingOrPublisherContaining(
             String title, String author, String publisher, Pageable pageable);
     
-    @Query("SELECT b FROM Book b ORDER BY b.salesIndex DESC")
+    @Query("SELECT b FROM Book b ORDER BY b.salesQuantity DESC")
     List<Book> findBestSellers(Pageable pageable);
     
     @Query("SELECT b FROM Book b WHERE b.registeredAt >= :oneMonthAgo ORDER BY b.registeredAt DESC")
     List<Book> findNewReleases(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
     
     // 상태별 개수 조회
-    long countByStatus(Book.BookStatus status);
+    long countByStatus(BookStatus status);
 }

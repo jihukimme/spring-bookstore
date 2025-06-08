@@ -1,6 +1,7 @@
 package com.example.bookstore.dto;
 
 import com.example.bookstore.entity.Book;
+import com.example.bookstore.enums.BookStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class BookDto {
     
     @NotNull(message = "가격은 필수입니다")
     @DecimalMin(value = "0.0", inclusive = false, message = "가격은 0보다 커야 합니다")
-    private BigDecimal price;
+    private Double price;
     
     private String imageUrl;
     private String pdfPreviewUrl;
@@ -51,7 +52,7 @@ public class BookDto {
     private Double rating;
     
     @Min(value = 0, message = "판매지수는 0 이상이어야 합니다")
-    private Integer salesIndex;
+    private Integer salesQuantity;
     
     @Min(value = 0, message = "재고수량은 0 이상이어야 합니다")
     private Integer stockQuantity;
@@ -70,11 +71,9 @@ public class BookDto {
                 .publisher(book.getPublisher())
                 .price(book.getPrice())
                 .imageUrl(book.getImageUrl())
-                .pdfPreviewUrl(book.getPdfPreviewUrl())
                 .description(book.getDescription())
-                .size(book.getSize())
                 .rating(book.getRating())
-                .salesIndex(book.getSalesIndex())
+                .salesQuantity(book.getSalesQuantity())
                 .stockQuantity(book.getStockQuantity())
                 .status(book.getStatus() != null ? book.getStatus().name() : null)
                 .registeredAt(book.getRegisteredAt())
@@ -92,11 +91,9 @@ public class BookDto {
                 .publisher(this.publisher)
                 .price(this.price)
                 .imageUrl(this.imageUrl)
-                .pdfPreviewUrl(this.pdfPreviewUrl)
                 .description(this.description)
-                .size(this.size)
                 .rating(this.rating)
-                .salesIndex(this.salesIndex)
+                .salesQuantity(this.salesQuantity)
                 .stockQuantity(this.stockQuantity)
                 .registeredAt(this.registeredAt)
                 .updatedAt(this.updatedAt)
@@ -104,10 +101,10 @@ public class BookDto {
         
         if (this.status != null) {
             try {
-                book.setStatus(Book.BookStatus.valueOf(this.status));
+                book.setStatus(BookStatus.valueOf(this.status));
             } catch (IllegalArgumentException e) {
                 // Default to SELLING if invalid
-                book.setStatus(Book.BookStatus.SELLING);
+                book.setStatus(BookStatus.SELLING);
             }
         }
         

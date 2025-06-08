@@ -1,6 +1,7 @@
 package com.example.bookstore.dto;
 
 import com.example.bookstore.entity.Category;
+import com.example.bookstore.enums.CategoryLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -45,10 +46,10 @@ public class CategoryDto {
         
         if (this.level != null) {
             try {
-                category.setLevel(Category.CategoryLevel.valueOf(this.level));
+                category.setLevel(CategoryLevel.valueOf(this.level));
             } catch (IllegalArgumentException e) {
                 // Default to LARGE if invalid
-                category.setLevel(Category.CategoryLevel.LARGE);
+                category.setLevel(CategoryLevel.LARGE);
             }
         }
         

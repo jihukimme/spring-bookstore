@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:fragment="header">
+<!-- Navigation admin으로 로그인 하지 않은 경우에만 표시할 네비게이션바 -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom"
+     th:unless="${#httpServletRequest != null and not #httpServletRequest.requestURI.startsWith('/admin')}">
+
+    <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand" th:href="@{/}">
+            <i class="fas fa-book"></i> BookStore24
+        </a>
+
+        <!-- User Menu -->
+        <div class="navbar-nav ms-auto">
+            <!-- 세션 기반 인증 (User로 로그인 시 나타나는 드롭다운 메뉴)-->
+            <div class="nav-item dropdown" th:if="${session.user != null}">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-user"></i> <span th:text="${session.user.name}">사용자</span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" th:href="@{/mypage}"><i class="fas fa-user-circle"></i> 마이페이지</a></li>
+                    <li><a class="dropdown-item" th:href="@{/orders}"><i class="fas fa-shopping-bag"></i> 주문내역</a></li>
+                    <li><a class="dropdown-item" th:href="@{/reviews/my}"><i class="fas fa-star"></i> 내 리뷰</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> 로그아웃</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-item" th:if="${session.user == null}">
+                <a class="nav-link" th:href="@{/login}">
+                    <i class="fas fa-sign-in-alt"></i> 로그인
+                </a>
+            </div>
+
+            <div class="nav-item position-relative">
+                <a class="nav-link" th:href="@{/cart}">
+                    <i class="fas fa-shopping-cart"></i> 장바구니
+                    <span class="cart-badge" th:if="${cartItemCount != null and cartItemCount > 0}"
+                          th:text="${cartItemCount}"></span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Admin Navigation (Admin으로 로그인 시 보여줄 네비게이션 바) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark"
+     th:if="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin')}">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/admin}">
+            <i class="fas fa-cogs"></i> BookStore24 관리자
+        </a>
+
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" th:href="@{/}">
+                <i class="fas fa-home"></i> 사용자 사이트
+            </a>
+            <a class="nav-link" th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> 로그아웃
+            </a>
+        </div>
+    </div>
+</nav>
+</html>

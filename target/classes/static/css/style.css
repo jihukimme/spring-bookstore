@@ -1,5 +1,6 @@
-/* BookStore24 Custom Styles */
-
+/* ===================== */
+/* 🎨 Theme Variables     */
+/* ===================== */
 :root {
   --primary-color: #007bff;
   --secondary-color: #6c757d;
@@ -11,7 +12,9 @@
   --dark-color: #343a40;
 }
 
-/* Global Styles */
+/* ===================== */
+/* 🌐 Global Styles       */
+/* ===================== */
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.6;
@@ -20,20 +23,22 @@ body {
 
 .navbar-brand {
   font-weight: bold;
-  color: var(--primary-color) !important;
   font-size: 1.5rem;
+  color: var(--primary-color) !important;
 }
 
 .navbar-brand i {
   margin-right: 8px;
 }
 
-/* Book Cards */
+/* ===================== */
+/* 📚 Book Cards          */
+/* ===================== */
 .book-card {
-  transition: all 0.3s ease;
   height: 100%;
   border: 1px solid #e9ecef;
   border-radius: 8px;
+  transition: all 0.3s ease;
   overflow: hidden;
 }
 
@@ -45,8 +50,8 @@ body {
 
 .book-image {
   height: 200px;
-  object-fit: cover;
   width: 100%;
+  object-fit: cover;
 }
 
 .book-title {
@@ -62,25 +67,27 @@ body {
 }
 
 .book-author {
-  color: #6c757d;
   font-size: 0.8rem;
+  color: #6c757d;
   margin-bottom: 0.5rem;
 }
 
 .book-price {
   font-weight: bold;
-  color: var(--primary-color);
   font-size: 1rem;
+  color: var(--primary-color);
 }
 
 .book-original-price {
-  text-decoration: line-through;
-  color: #6c757d;
   font-size: 0.8rem;
+  color: #6c757d;
   margin-right: 0.5rem;
+  text-decoration: line-through;
 }
 
-/* Rating Stars */
+/* ===================== */
+/* ⭐ Rating Stars        */
+/* ===================== */
 .rating {
   color: #ffc107;
   font-size: 0.8rem;
@@ -90,7 +97,9 @@ body {
   margin-right: 1px;
 }
 
-/* Bestseller Badge */
+/* ===================== */
+/* 🥇 Bestseller Badge    */
+/* ===================== */
 .bestseller-badge {
   position: absolute;
   top: 10px;
@@ -104,9 +113,11 @@ body {
   z-index: 2;
 }
 
-/* Search Bar */
+/* ===================== */
+/* 🔍 Search Bar          */
+/* ===================== */
 .search-bar {
-  max-width: 600px;
+  width: 70%;
 }
 
 .search-bar .form-control {
@@ -120,7 +131,9 @@ body {
   border-left: none;
 }
 
-/* Sidebar */
+/* ===================== */
+/* 🧭 Sidebar             */
+/* ===================== */
 .sidebar {
   background-color: #f8f9fa;
   min-height: calc(100vh - 56px);
@@ -140,7 +153,9 @@ body {
   font-weight: 600;
 }
 
-/* Popular Search Terms */
+/* ===================== */
+/* 🔥 인기 검색어         */
+/* ===================== */
 .popular-search {
   font-size: 0.9rem;
 }
@@ -173,7 +188,9 @@ body {
   color: var(--primary-color);
 }
 
-/* Cart Badge */
+/* ===================== */
+/* 🛒 Cart Badge          */
+/* ===================== */
 .cart-badge {
   position: absolute;
   top: -8px;
@@ -190,9 +207,11 @@ body {
   font-weight: bold;
 }
 
-/* Hero Section */
+/* ===================== */
+/* 🦸 Hero Section        */
+/* ===================== */
 .hero-section {
-  background: linear-gradient(135deg, var(--primary-color) 0%, #6f42c1 100%);
+  background: linear-gradient(135deg, var(--primary-color), #6f42c1);
   color: white;
   border-radius: 12px;
   padding: 3rem 2rem;
@@ -208,12 +227,13 @@ body {
   right: 0;
   width: 100%;
   height: 100%;
-  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>')
-    repeat;
+  background: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='2' fill='white' opacity='0.1'/></svg>") repeat;
   background-size: 50px 50px;
 }
 
-/* Form Styles */
+/* ===================== */
+/* 📝 Forms               */
+/* ===================== */
 .form-floating > .form-control {
   height: calc(3.5rem + 2px);
   line-height: 1.25;
@@ -228,7 +248,9 @@ body {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-/* Button Styles */
+/* ===================== */
+/* 🔘 Buttons             */
+/* ===================== */
 .btn {
   border-radius: 6px;
   font-weight: 500;
@@ -249,7 +271,9 @@ body {
   transform: translateY(-1px);
 }
 
-/* Alert Styles */
+/* ===================== */
+/* 📢 Alerts              */
+/* ===================== */
 .alert {
   border-radius: 8px;
   border: none;
@@ -266,7 +290,9 @@ body {
   color: #721c24;
 }
 
-/* Table Styles */
+/* ===================== */
+/* 📊 Tables              */
+/* ===================== */
 .table {
   border-radius: 8px;
   overflow: hidden;
@@ -284,7 +310,9 @@ body {
   background-color: rgba(0, 123, 255, 0.05);
 }
 
-/* Footer */
+/* ===================== */
+/* 🦶 Footer              */
+/* ===================== */
 footer {
   background-color: var(--light-color);
   border-top: 1px solid #dee2e6;
@@ -307,7 +335,9 @@ footer a:hover {
   color: var(--primary-color);
 }
 
-/* Responsive Design */
+/* ===================== */
+/* 📱 Responsive Layout   */
+/* ===================== */
 @media (max-width: 768px) {
   .hero-section {
     padding: 2rem 1rem;
@@ -350,7 +380,9 @@ footer a:hover {
   }
 }
 
-/* Animation Classes */
+/* ===================== */
+/* 🌀 Animations           */
+/* ===================== */
 .fade-in {
   animation: fadeIn 0.5s ease-in;
 }
@@ -381,7 +413,9 @@ footer a:hover {
   }
 }
 
-/* Loading Spinner */
+/* ===================== */
+/* 🔄 Spinner              */
+/* ===================== */
 .spinner {
   display: inline-block;
   width: 20px;
@@ -393,27 +427,26 @@ footer a:hover {
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* Utility Classes */
-.text-truncate-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
+/* ===================== */
+/* 🛠 Utilities            */
+/* ===================== */
+.text-truncate-2,
 .text-truncate-3 {
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+
+.text-truncate-2 {
+  -webkit-line-clamp: 2;
+}
+
+.text-truncate-3 {
+  -webkit-line-clamp: 3;
 }
 
 .shadow-hover {
@@ -424,7 +457,9 @@ footer a:hover {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* Print Styles */
+/* ===================== */
+/* 🖨 Print Styles         */
+/* ===================== */
 @media print {
   .navbar,
   .sidebar,

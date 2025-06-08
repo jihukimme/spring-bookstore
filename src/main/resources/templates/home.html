@@ -1,190 +1,121 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
 <head>
-    <title>홈 - BookStore24</title>
+    <title>홈</title> <!-- 자동으로 layout의 $CONTENT_TITLE에 치환됨 -->
 </head>
+
 <body>
-    <main th:replace="~{layout/base :: content}">
-        <div class="container-fluid">
-            <div class="row">
-                <!-- Main Content -->
-                <div class="col-lg-9">
-                    <!-- Hero Banner -->
-                    <div class="bg-primary text-white rounded p-5 mb-4">
-                        <div class="row align-items-center">
-                            <div class="col-md-8">
-                                <h1 class="display-5 fw-bold">새로운 책과의 만남</h1>
-                                <p class="lead">매일 업데이트되는 신간과 베스트셀러를 만나보세요</p>
-                                <a class="btn btn-light btn-lg" th:href="@{/books}">
-                                    신간 보러가기 <i class="fas fa-arrow-right"></i>
-                                </a>
-                            </div>
-                            <div class="col-md-4 text-center">
-                                <i class="fas fa-book-open fa-5x opacity-75"></i>
-                            </div>
-                        </div>
+<div layout:fragment="content">
+    <!-- 여기부터 본문 내용 -->
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+
+            <!-- Hero Banner -->
+            <div class="bg-primary text-white p-5">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="display-5 fw-bold">새로운 책과의 만남</h1>
+                        <p class="lead">매일 업데이트되는 신간과 베스트셀러를 만나보세요</p>
+                        <a class="btn btn-light btn-lg" th:href="@{/books}">
+                            신간 보러가기 <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
-                    
-                    <!-- Monthly Bestsellers -->
-                    <section class="mb-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2 class="h3">
-                                <i class="fas fa-trophy text-warning me-2"></i>
-                                이달의 베스트셀러
-                            </h2>
-                            <a th:href="@{/books(sortBy='salesIndex', sortDir='desc')}" class="btn btn-outline-primary btn-sm">
-                                더보기 <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-2 col-sm-4 col-6 mb-4" th:each="book, iterStat : ${bestSellers}" th:if="${iterStat.index < 5}">
-                                <div class="card book-card h-100 position-relative">
-                                    <span class="bestseller-badge" th:text="${iterStat.index + 1}"></span>
-                                    <img th:src="${book.imageUrl != null ? book.imageUrl : '/images/book-placeholder.jpg'}" 
-                                         class="card-img-top book-image" th:alt="${book.title}">
-                                    <div class="card-body p-2">
-                                        <h6 class="card-title text-truncate" th:text="${book.title}">책 제목</h6>
-                                        <p class="card-text text-muted small mb-1" th:text="${book.author}">저자</p>
-                                        <div class="rating mb-1" th:if="${book.rating != null}">
+                    <div class="col-md-4 text-center">
+                        <i class="fas fa-book-open fa-5x opacity-75"></i>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Search Bar -->
+            <div class="search-bar p-2">
+                <!--            /books?title="책제목" 으로 이동-->
+                <form th:action="@{/books}" method="get" class="d-flex">
+                    <input class="form-control" type="search" name="title" placeholder="책 제목, 저자, 출판사를 검색하세요"
+                           th:value="${param.title}">
+                    <button class="btn btn-outline-primary" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+
+            <!-- Monthly Bestsellers -->
+            <section class="mb-5 px-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h3">
+                        <i class="fas fa-trophy text-warning me-2"></i>
+                        이달의 베스트셀러
+                    </h2>
+                    <a th:href="@{/books(sortBy='salesIndex', sortDir='desc')}" class="btn btn-outline-primary btn-sm">
+                        더보기 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-4 col-6 mb-4" th:each="book, iterStat : ${bestSellers}"
+                         th:if="${iterStat.index < 5}">
+                        <div class="card book-card h-100 position-relative">
+                            <span class="bestseller-badge" th:text="${iterStat.index + 1}"></span>
+                            <img th:src="${book.imageUrl != null ? book.imageUrl : '/images/book-placeholder.jpg'}"
+                                 class="card-img-top book-image" th:alt="${book.title}">
+                            <div class="card-body p-2">
+                                <h6 class="card-title text-truncate" th:text="${book.title}">책 제목</h6>
+                                <p class="card-text text-muted small mb-1" th:text="${book.author}">저자</p>
+                                <div class="rating mb-1" th:if="${book.rating != null}">
                                             <span th:each="i : ${#numbers.sequence(1, 5)}">
                                                 <i class="fas fa-star" th:if="${i <= book.rating}"></i>
                                                 <i class="far fa-star" th:unless="${i <= book.rating}"></i>
                                             </span>
-                                            <small th:text="${book.rating}">4.5</small>
-                                        </div>
-                                        <p class="price mb-0" th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'">15,000원</p>
-                                    </div>
+                                    <small th:text="${book.rating}">4.5</small>
                                 </div>
-                            </div>
-                        </div>
-                    </section>
-                    
-                    <!-- New Releases -->
-                    <section class="mb-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2 class="h3">
-                                <i class="fas fa-star text-success me-2"></i>
-                                신간 도서
-                            </h2>
-                            <a th:href="@{/books(sortBy='registeredAt', sortDir='desc')}" class="btn btn-outline-primary btn-sm">
-                                더보기 <i class="fas fa-arrow-right"></i>
-                            </a>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-md-3 col-sm-6 mb-4" th:each="book : ${newReleases}" th:if="${bookStat.index < 4}">
-                                <div class="card book-card h-100">
-                                    <img th:src="${book.imageUrl != null ? book.imageUrl : '/images/book-placeholder.jpg'}" 
-                                         class="card-img-top book-image" th:alt="${book.title}">
-                                    <div class="card-body">
-                                        <h6 class="card-title" th:text="${book.title}">책 제목</h6>
-                                        <p class="card-text text-muted small mb-2" th:text="${book.author}">저자</p>
-                                        <p class="card-text text-muted small mb-2" th:text="${book.publisher}">출판사</p>
-                                        <p class="price" th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'">15,000원</p>
-                                        <div class="d-grid gap-2">
-                                            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-outline-primary btn-sm">상세보기</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-                
-                <!-- Sidebar -->
-                <div class="col-lg-3">
-                    <div class="sidebar p-3">
-                        <!-- Popular Search Terms -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-fire text-danger me-2"></i>
-                                    실시간 인기 검색어
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="popular-search" th:each="searchTerm, iterStat : ${popularSearches}" th:if="${iterStat.index < 10}">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <div>
-                                            <span class="rank" th:classappend="${iterStat.index < 3 ? 'hot' : ''}" th:text="${iterStat.index + 1}">1</span>
-                                            <a th:href="@{/books(title=${searchTerm.term})}" 
-                                               class="text-decoration-none" th:text="${searchTerm.term}">검색어</a>
-                                        </div>
-                                        <span class="badge bg-danger" th:if="${iterStat.index < 3}">HOT</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Quick Menu -->
-                        <div class="card mb-4">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-bolt text-warning me-2"></i>
-                                    빠른 메뉴
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="d-grid gap-2">
-                                    <a th:href="@{/cart}" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-shopping-cart me-2"></i>장바구니
-                                    </a>
-                                    <a th:href="@{/orders}" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-shopping-bag me-2"></i>주문조회
-                                    </a>
-                                    <a th:href="@{/mypage}" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-heart me-2"></i>위시리스트
-                                    </a>
-                                    <a th:href="@{/reviews}" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-star me-2"></i>내 리뷰
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Categories -->
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-list text-info me-2"></i>
-                                    카테고리
-                                </h5>
-                            </div>
-                            <div class="card-body">
-                                <ul class="list-unstyled">
-                                    <li class="mb-2">
-                                        <a href="#" class="text-decoration-none">
-                                            <i class="fas fa-book me-2"></i>소설
-                                        </a>
-                                    </li>
-                                    <li class="mb-2">
-                                        <a href="#" class="text-decoration-none">
-                                            <i class="fas fa-lightbulb me-2"></i>자기계발
-                                        </a>
-                                    </li>
-                                    <li class="mb-2">
-                                        <a href="#" class="text-decoration-none">
-                                            <i class="fas fa-chart-line me-2"></i>경제/경영
-                                        </a>
-                                    </li>
-                                    <li class="mb-2">
-                                        <a href="#" class="text-decoration-none">
-                                            <i class="fas fa-graduation-cap me-2"></i>인문학
-                                        </a>
-                                    </li>
-                                    <li class="mb-2">
-                                        <a href="#" class="text-decoration-none">
-                                            <i class="fas fa-flask me-2"></i>과학/기술
-                                        </a>
-                                    </li>
-                                </ul>
+                                <p class="price mb-0" th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'">
+                                    15,000원</p>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <!-- New Releases -->
+            <section class="mb-5 px-5">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="h3">
+                        <i class="fas fa-star text-success me-2"></i>
+                        신간 도서
+                    </h2>
+                    <a th:href="@{/books(sortBy='registeredAt', sortDir='desc')}"
+                       class="btn btn-outline-primary btn-sm">
+                        더보기 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-2 col-sm-6 mb-4" th:each="book : ${newReleases}" th:if="${bookStat.index < 5}">
+                        <div class="card book-card h-100">
+                            <img th:src="${book.imageUrl != null ? book.imageUrl : '/images/book-placeholder.jpg'}"
+                                 class="card-img-top book-image" th:alt="${book.title}">
+                            <div class="card-body">
+                                <h6 class="card-title" th:text="${book.title}">책 제목</h6>
+                                <p class="card-text text-muted small mb-2" th:text="${book.author}">저자</p>
+                                <p class="card-text text-muted small mb-2" th:text="${book.publisher}">출판사</p>
+                                <p class="price" th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')} + '원'">
+                                    15,000원</p>
+                                <div class="d-grid gap-2">
+                                    <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-outline-primary btn-sm">상세보기</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-    </main>
+
+
+    </div>
+</div>
 </body>
 </html>
